@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "no.vigilo"
-version = "1.0-SNAPSHOT"
+version = properties["version"] ?: "local-build"
 
 val slf4jVersion = "2.0.16"
 val micrometerRegistryPrometheusVersion = "1.13.4"
