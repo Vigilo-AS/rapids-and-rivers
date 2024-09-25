@@ -3,7 +3,6 @@ plugins {
     `java-library`
     java
     `maven-publish`
-
 }
 
 group = "no.vigilo"
