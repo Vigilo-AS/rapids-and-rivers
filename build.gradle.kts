@@ -41,6 +41,10 @@ kotlin {
     jvmToolchain(17)
 }
 
+java {
+    withSourcesJar()
+}
+
 val githubUser: String? by project
 val githubPassword: String? by project
 
