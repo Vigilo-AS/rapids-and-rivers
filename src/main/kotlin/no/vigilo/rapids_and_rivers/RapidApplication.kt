@@ -43,7 +43,7 @@ class RapidApplication(
         fun create(
             env: Map<String, String>,
             consumerProducerFactory: ConsumerProducerFactory = ConsumerProducerFactory(AivenConfig.default),
-            withKey: Boolean = false,
+            applicationEventsWithKey: Boolean = false,
         ): RapidsConnection {
             val meterRegistry =
                 PrometheusMeterRegistry(PrometheusConfig.DEFAULT, PrometheusRegistry.defaultRegistry, Clock.SYSTEM)
@@ -58,7 +58,7 @@ class RapidApplication(
                 rapid = kafkaRapid,
                 appName = generateAppName(env),
                 instanceId = generateInstanceId(env),
-                applicationEventsWithKey = withKey
+                applicationEventsWithKey = applicationEventsWithKey
             )
         }
 

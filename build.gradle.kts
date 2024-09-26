@@ -43,6 +43,7 @@ kotlin {
 
 java {
     withSourcesJar()
+    withJavadocJar()
 }
 
 val githubUser: String? by project

@@ -40,9 +40,9 @@ open class JsonMessage(
         private const val IdKey = "@id"
         private const val OpprettetKey = "@created"
         private const val EventNameKey = "@event_name"
-        private const val NeedKey = "@behov"
-        private const val ReadCountKey = "system_read_count"
-        private const val ParticipatingServicesKey = "system_participating_services"
+        private const val NeedKey = "@need"
+        private const val ReadCountKey = "@system_read_count"
+        private const val ParticipatingServicesKey = "@system_participating_services"
 
         private val serviceName: String? = System.getenv("VAIS_APP_NAME")
         private val serviceImage: String? = System.getenv("VAIS_APP_IMAGE")
@@ -68,8 +68,8 @@ open class JsonMessage(
             map: Map<String, Any> = emptyMap(),
             metrics: MeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT),
             randomIdGenerator: RandomIdGenerator? = null
-        ) = newMessage("behov", mapOf(
-            "@behovId" to UUID.randomUUID(),
+        ) = newMessage("need", mapOf(
+            "@needId" to UUID.randomUUID(),
             NeedKey to behov
         ) + map, metrics, randomIdGenerator)
 
@@ -130,9 +130,9 @@ open class JsonMessage(
         mutableMapOf<String, Any>(
             "id" to json.path(IdKey).asText()
         ).apply {
-            compute("opprettet") { _, _ -> json.path(OpprettetKey).asText().takeUnless { it.isBlank() } }
+            compute("created") { _, _ -> json.path(OpprettetKey).asText().takeUnless { it.isBlank() } }
             compute("event_name") { _, _ -> json.path(EventNameKey).asText().takeUnless { it.isBlank() } }
-            compute("behov") { _, _ -> json.path(NeedKey).map(JsonNode::asText).takeUnless(List<*>::isEmpty) }
+            compute("need") { _, _ -> json.path(NeedKey).map(JsonNode::asText).takeUnless(List<*>::isEmpty) }
         }.toMap()
 
     fun rejectKey(vararg key: String) {

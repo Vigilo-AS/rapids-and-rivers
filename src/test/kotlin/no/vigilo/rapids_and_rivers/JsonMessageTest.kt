@@ -43,11 +43,11 @@ internal class JsonMessageTest {
     fun `create need from map`() {
         val behovsliste = listOf("behov1", "behov2")
         val node = objectMapper.readTree(JsonMessage.newNeed(behovsliste, mapOf("foo" to "bar")).toJson())
-        assertEquals(behovsliste, node.path("@behov").map(JsonNode::asText))
-        assertDoesNotThrow { node.path("@behovId").asText().toUUID() }
+        assertEquals(behovsliste, node.path("@need").map(JsonNode::asText))
+        assertDoesNotThrow { node.path("@needId").asText().toUUID() }
         assertDoesNotThrow { node.path("@id").asText().toUUID() }
         assertDoesNotThrow { LocalDateTime.parse(node.path("@created").asText()) }
-        assertEquals("behov", node.path("@event_name").asText())
+        assertEquals("need", node.path("@event_name").asText())
         assertEquals("bar", node.path("foo").asText())
     }
 
@@ -212,14 +212,14 @@ internal class JsonMessageTest {
     fun `read count`() {
         val problems = MessageProblems("{}")
         val firstMessage = JsonMessage("{}", problems, meterRegistry).apply {
-            interestedIn("system_read_count")
+            interestedIn("@system_read_count")
         }
-        assertEquals(0, firstMessage["system_read_count"].intValue())
+        assertEquals(0, firstMessage["@system_read_count"].intValue())
 
         val secondMessage = JsonMessage(firstMessage.toJson(), problems, meterRegistry).apply {
-            interestedIn("system_read_count")
+            interestedIn("@system_read_count")
         }
-        assertEquals(1, secondMessage["system_read_count"].intValue())
+        assertEquals(1, secondMessage["@system_read_count"].intValue())
     }
 
     @Test
