@@ -71,7 +71,11 @@ class KafkaRapid(
     private fun publish(producerRecord: ProducerRecord<String, String>) {
         check(!producerClosed.get()) { "can't publish messages when producer is closed" }
         producer.send(producerRecord) { _, err ->
-            if (err == null || !isFatalError(err)) return@send
+            if (err == null) return@send
+            if (!isFatalError(err)) {
+                log.warn("error while publishing message: ${err.message}", err)
+                return@send
+            }
             log.error("Shutting down rapid due to fatal error: ${err.message}", err)
             stop()
         }
