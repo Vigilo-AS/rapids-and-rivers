@@ -1,5 +1,15 @@
+val slf4jVersion = "2.0.16"
+val micrometerRegistryPrometheusVersion = "1.13.4"
+val jacksonVersion = "2.17.2"
+val testcontainersVersion = "1.20.1"
+val kafkaVersion = "3.8.0"
+val kafkaTestcontainerVersion = "1.20.1"
+
 plugins {
     kotlin("jvm") version "2.0.20"
+    kotlin("plugin.spring") version "2.0.20"
+    id("org.springframework.boot") version "3.3.4"
+    id("io.spring.dependency-management") version "1.1.6"
     `java-library`
     java
     `maven-publish`
@@ -8,12 +18,6 @@ plugins {
 group = "no.vigilo"
 version = properties["version"] ?: "local-build"
 
-val slf4jVersion = "2.0.16"
-val micrometerRegistryPrometheusVersion = "1.13.4"
-val jacksonVersion = "2.17.2"
-val testcontainersVersion = "1.20.1"
-val kafkaVersion = "3.8.0"
-val kafkaTestcontainerVersion = "1.20.1"
 
 repositories {
     mavenCentral()
@@ -25,13 +29,11 @@ dependencies {
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     api("org.slf4j:slf4j-api:$slf4jVersion")
     api("io.micrometer:micrometer-registry-prometheus:$micrometerRegistryPrometheusVersion")
-
+    api("org.springframework.boot:spring-boot")
 
     testImplementation(kotlin("test"))
     testImplementation("org.testcontainers:kafka:$kafkaTestcontainerVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
-
-
 }
 
 tasks.test {
@@ -66,13 +68,6 @@ publishing {
                 name.set("rapids-rivers")
                 description.set("Rapids and Rivers")
                 url.set("https://github.com/vigilo-as/rapids-and-rivers")
-
-//                licenses {
-//                    license {
-//                        name.set("MIT License")
-//                        url.set("https://opensource.org/licenses/MIT")
-//                    }
-//                }
 
                 scm {
                     connection.set("scm:git:https://github.com/vigilo-as/rapids-and-rivers.git")
