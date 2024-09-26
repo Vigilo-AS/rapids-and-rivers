@@ -40,6 +40,16 @@ class RapidApplication(
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(RapidApplication::class.java)
 
+        /**
+         * Create a RapidApplication from environment variables.
+         * The environment variables are used to create a KafkaRapid.
+         * The application name is generated from the environment variables VAIS_APP_NAME, VAIS_NAMESPACE and VAIS_CLUSTER_NAME.
+         * The instance id is generated from the environment variable VAIS_APP_NAME or a random UUID.
+         *
+         * @param env Map<String, String> the environment variables
+         * @param consumerProducerFactory ConsumerProducerFactory the factory to create the KafkaRapid. Defaults to AivenConfig.default
+         * @param applicationEventsWithKey Boolean whether to publish application events with a key. The key is a random UUID.
+         */
         fun create(
             env: Map<String, String>,
             consumerProducerFactory: ConsumerProducerFactory = ConsumerProducerFactory(AivenConfig.default),
