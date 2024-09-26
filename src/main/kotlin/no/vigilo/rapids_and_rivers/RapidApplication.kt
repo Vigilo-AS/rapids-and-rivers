@@ -8,14 +8,27 @@ import io.prometheus.metrics.model.registry.PrometheusRegistry
 import no.vigilo.kafka.AivenConfig
 import no.vigilo.kafka.ConsumerProducerFactory
 import no.vigilo.rapids_and_rivers_api.MessageContext
+import no.vigilo.rapids_and_rivers_api.RandomIdGenerator
 import no.vigilo.rapids_and_rivers_api.RapidsConnection
 import java.net.InetAddress
 import java.util.*
 
+/**
+ * RapidApplication is a wrapper around RapidsConnection that provides a simple way to create a
+ * Rapid application that can be started and stopped.
+ * It also provides a way to publish application events on startup, ready, not ready, shutdown signal and shutdown.
+ * The application events are published to the same topic as the application messages.
+ *
+ * @param rapid RapidsConnection
+ * @param appName String? the name of the application
+ * @param instanceId String the id of the application instance
+ * @param applicationEventsWithKey Boolean whether to publish application events with a key. The key is a random UUID.
+ */
 class RapidApplication(
     private val rapid: RapidsConnection,
     private val appName: String? = null,
     private val instanceId: String,
+    private val applicationEventsWithKey: Boolean,
 ) : RapidsConnection(), RapidsConnection.MessageListener, RapidsConnection.StatusListener {
 
     init {
@@ -30,6 +43,7 @@ class RapidApplication(
         fun create(
             env: Map<String, String>,
             consumerProducerFactory: ConsumerProducerFactory = ConsumerProducerFactory(AivenConfig.default),
+            withKey: Boolean = false,
         ): RapidsConnection {
             val meterRegistry =
                 PrometheusMeterRegistry(PrometheusConfig.DEFAULT, PrometheusRegistry.defaultRegistry, Clock.SYSTEM)
@@ -43,7 +57,8 @@ class RapidApplication(
             return RapidApplication(
                 rapid = kafkaRapid,
                 appName = generateAppName(env),
-                instanceId = generateInstanceId(env)
+                instanceId = generateInstanceId(env),
+                applicationEventsWithKey = withKey
             )
         }
 
@@ -124,7 +139,11 @@ class RapidApplication(
         applicationEvent(event)?.also {
             log.info("publishing $event event for app_name=$appName, instance_id=$instanceId")
             try {
-                rapidsConnection.publish(it)
+                if (applicationEventsWithKey) {
+                    rapidsConnection.publish(RandomIdGenerator.Default.generateId(), it)
+                } else {
+                    rapidsConnection.publish(it)
+                }
             } catch (err: Exception) {
                 log.info("failed to publish event: {}", err.message, err)
             }
