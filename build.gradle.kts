@@ -7,9 +7,6 @@ val kafkaTestcontainerVersion = "1.20.1"
 
 plugins {
     kotlin("jvm") version "2.0.20"
-    kotlin("plugin.spring") version "2.0.20"
-    id("org.springframework.boot") version "3.3.4"
-    id("io.spring.dependency-management") version "1.1.6"
     `java-library`
     java
     `maven-publish`
@@ -29,7 +26,7 @@ dependencies {
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     api("org.slf4j:slf4j-api:$slf4jVersion")
     api("io.micrometer:micrometer-registry-prometheus:$micrometerRegistryPrometheusVersion")
-    api("org.springframework.boot:spring-boot")
+    api("org.springframework.boot:spring-boot:3.3.4")
 
     testImplementation(kotlin("test"))
     testImplementation("org.testcontainers:kafka:$kafkaTestcontainerVersion")
