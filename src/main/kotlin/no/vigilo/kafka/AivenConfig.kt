@@ -31,7 +31,6 @@ class AivenConfig(
 
     init {
         check(brokers.isNotEmpty())
-        log.info(certificateChain())
     }
 
     override fun producerConfig(properties: Properties) = Properties().apply {
