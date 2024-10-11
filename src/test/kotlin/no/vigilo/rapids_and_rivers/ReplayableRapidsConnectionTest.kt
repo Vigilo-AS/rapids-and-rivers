@@ -69,9 +69,9 @@ internal class ReplayableRapidsConnectionTest {
         testRapid.queueReplayMessage(key, replayedMessage)
         testRapid.sendTestMessage(originalMessage)
         assertEquals(2, packetInspector.size)
-        assertEquals(2, testRapid.inspektør.size)
-        assertEquals(key, testRapid.inspektør.key(1))
-        assertEquals("bar", testRapid.inspektør.message(1).path("foo").asText())
+        assertEquals(2, testRapid.inspector.size)
+        assertEquals(key, testRapid.inspector.key(1))
+        assertEquals("bar", testRapid.inspector.message(1).path("foo").asText())
     }
 
     @Test
@@ -89,9 +89,9 @@ internal class ReplayableRapidsConnectionTest {
         testRapid.queueReplayMessage(key, replayedMessage)
         testRapid.sendTestMessage(originalMessage)
         assertEquals(2, packetInspector.size)
-        assertEquals(2, testRapid.inspektør.size)
-        assertEquals(newKey, testRapid.inspektør.key(1))
-        assertEquals("bar", testRapid.inspektør.message(1).path("foo").asText())
+        assertEquals(2, testRapid.inspector.size)
+        assertEquals(newKey, testRapid.inspector.key(1))
+        assertEquals("bar", testRapid.inspector.message(1).path("foo").asText())
     }
 
     private class PacketInspector(

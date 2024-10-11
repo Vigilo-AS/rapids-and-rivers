@@ -17,7 +17,7 @@ class TestRapid(private val meterRegistry: MeterRegistry = PrometheusMeterRegist
     }
 
     private val messages = mutableListOf<Pair<String?, String>>()
-    val inspektør get() = RapidInspector(messages.toList())
+    val inspector get() = RapidInspector(messages.toList())
 
     fun reset() {
         messages.clear()

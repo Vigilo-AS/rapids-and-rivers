@@ -17,20 +17,20 @@ internal class TestRapidTest {
     @Test
     fun `send and read messages`() {
         rapid.publish("""{ "hello": "world" }""")
-        assertEquals(1, rapid.inspektør.size)
-        assertEquals("world", rapid.inspektør.message(0).path("hello").asText())
-        assertEquals("world", rapid.inspektør.field(0, "hello").asText())
+        assertEquals(1, rapid.inspector.size)
+        assertEquals("world", rapid.inspector.message(0).path("hello").asText())
+        assertEquals("world", rapid.inspector.field(0, "hello").asText())
         rapid.reset()
-        assertEquals(0, rapid.inspektør.size)
+        assertEquals(0, rapid.inspector.size)
     }
 
     @Test
     fun `throws exception for invalid scenarios`() {
-        assertThrows<IndexOutOfBoundsException> { rapid.inspektør.message(0) }
-        assertThrows<IndexOutOfBoundsException> { rapid.inspektør.field(0, "does_not_exist") }
+        assertThrows<IndexOutOfBoundsException> { rapid.inspector.message(0) }
+        assertThrows<IndexOutOfBoundsException> { rapid.inspector.field(0, "does_not_exist") }
         assertThrows<IllegalArgumentException> {
             rapid.publish("""{ "hello": "world" }""")
-            rapid.inspektør.field(0, "does_not_exist")
+            rapid.inspector.field(0, "does_not_exist")
         }
     }
 }
