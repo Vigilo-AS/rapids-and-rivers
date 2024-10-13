@@ -9,7 +9,7 @@ class KeyMessageContext(
         publish(key, message)
     }
 
-    override fun publish(key: String, message: String) {
+    override fun publish(key: String, message: String?) {
         rapidsConnection.publish(key, message)
     }
 

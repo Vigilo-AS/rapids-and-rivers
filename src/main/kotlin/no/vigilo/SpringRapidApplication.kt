@@ -50,7 +50,7 @@ class SpringRapidApplication(
         rapid.publish(message)
     }
 
-    fun publish(key: String, message: String) {
+    fun publish(key: String, message: String?) {
         rapid.publish(key, message)
     }
 

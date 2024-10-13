@@ -16,7 +16,7 @@ class TestRapid(private val meterRegistry: MeterRegistry = PrometheusMeterRegist
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 
-    private val messages = mutableListOf<Pair<String?, String>>()
+    private val messages = mutableListOf<Pair<String?, String?>>()
     val inspector get() = RapidInspector(messages.toList())
 
     fun reset() {
@@ -31,7 +31,7 @@ class TestRapid(private val meterRegistry: MeterRegistry = PrometheusMeterRegist
         messages.add(null to message)
     }
 
-    override fun publish(key: String, message: String) {
+    override fun publish(key: String, message: String?) {
         messages.add(key to message)
     }
 
@@ -42,12 +42,12 @@ class TestRapid(private val meterRegistry: MeterRegistry = PrometheusMeterRegist
     override fun start() {}
     override fun stop() {}
 
-    class RapidInspector(private val messages: List<Pair<String?, String>>) {
+    class RapidInspector(private val messages: List<Pair<String?, String?>>) {
         private val jsonMessages = mutableMapOf<Int, JsonNode>()
         val size get() = messages.size
 
         fun key(index: Int) = messages[index].first
-        fun message(index: Int) = jsonMessages.getOrPut(index) { objectMapper.readTree(messages[index].second) }
+        fun message(index: Int) = jsonMessages.getOrPut(index) { messages[index].second?.let { objectMapper.readTree(it) } ?: objectMapper.nullNode() }
         fun field(index: Int, field: String) = requireNotNull(message(index).path(field).takeUnless { it.isMissingNode || it.isNull }) {
             "Message does not contain field '$field'"
         }

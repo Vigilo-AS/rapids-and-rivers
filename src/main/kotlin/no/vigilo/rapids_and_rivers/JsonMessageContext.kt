@@ -11,11 +11,11 @@ internal class JsonMessageContext(
         rapidsConnection.publish(populateStandardFields(message))
     }
 
-    override fun publish(key: String, message: String) {
+    override fun publish(key: String, message: String?) {
         rapidsConnection.publish(key, populateStandardFields(message))
     }
 
-    private fun populateStandardFields(message: String) =
+    private fun populateStandardFields(message: String?) =
         JsonMessage.populateStandardFields(packet, message)
 
     override fun rapidName(): String {

@@ -10,27 +10,27 @@ internal class MessageProblemsTest {
 
     private lateinit var problems: MessageProblems
 
-    private val Message = "the message"
+    private val message = "the message"
 
     @BeforeEach
     internal fun setUp() {
-        problems = MessageProblems(Message)
+        problems = MessageProblems(message)
     }
 
     @Test
     internal fun `does not contain original message`() {
-        assertFalse(problems.toString().contains(Message))
+        assertFalse(problems.toString().contains(message))
         val message = "a message"
         problems.error(message)
-        assertFalse(problems.toString().contains(Message))
+        assertFalse(problems.toString().contains(this.message))
     }
 
     @Test
     internal fun `contains original message in extended report`() {
-        assertFalse(problems.toExtendedReport().contains(Message))
+        assertFalse(problems.toExtendedReport().contains(message))
         val message = "a message"
         problems.error(message)
-        assertTrue(problems.toExtendedReport().contains(Message))
+        assertTrue(problems.toExtendedReport().contains(this.message))
     }
 
     @Test

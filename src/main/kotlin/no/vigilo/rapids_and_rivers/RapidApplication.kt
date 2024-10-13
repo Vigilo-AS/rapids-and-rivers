@@ -103,7 +103,7 @@ class RapidApplication(
         rapid.publish(message)
     }
 
-    override fun publish(key: String, message: String) {
+    override fun publish(key: String, message: String?) {
         rapid.publish(key, message)
     }
 

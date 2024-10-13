@@ -60,7 +60,7 @@ class KafkaRapid(
         publish(ProducerRecord(rapidTopic, message))
     }
 
-    override fun publish(key: String, message: String) {
+    override fun publish(key: String, message: String?) {
         publish(ProducerRecord(rapidTopic, key, message))
     }
 

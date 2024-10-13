@@ -73,7 +73,7 @@ open class JsonMessage(
             NeedKey to behov
         ) + map, metrics, randomIdGenerator)
 
-        internal fun populateStandardFields(originalMessage: JsonMessage, message: String, randomIdGenerator: RandomIdGenerator = originalMessage.idGenerator): String {
+        internal fun populateStandardFields(originalMessage: JsonMessage, message: String?, randomIdGenerator: RandomIdGenerator = originalMessage.idGenerator): String {
             return (objectMapper.readTree(message) as ObjectNode).also {
                 it.replace("@forårsaket_av", objectMapper.valueToTree(originalMessage.tracing))
                 if (it.path("@id").isMissingOrNull() || it.path("@id").asText() == originalMessage.id) {
