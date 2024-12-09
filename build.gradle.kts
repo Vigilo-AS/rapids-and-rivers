@@ -2,7 +2,7 @@ val slf4jVersion = "2.0.16"
 val micrometerRegistryPrometheusVersion = "1.13.4"
 val jacksonVersion = "2.17.2"
 val testcontainersVersion = "1.20.1"
-val kafkaVersion = "3.8.0"
+val kafkaVersion = "3.8.1"
 val kafkaTestcontainerVersion = "1.20.1"
 
 plugins {
