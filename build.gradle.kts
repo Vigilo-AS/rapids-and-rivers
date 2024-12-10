@@ -1,8 +1,8 @@
 val slf4jVersion = "2.0.16"
-val micrometerRegistryPrometheusVersion = "1.13.4"
-val jacksonVersion = "2.17.2"
+val micrometerRegistryPrometheusVersion = "1.14.1"
+val jacksonVersion = "2.18.2"
 val testcontainersVersion = "1.20.1"
-val kafkaVersion = "3.8.1"
+val kafkaVersion = "3.9.0"
 val kafkaTestcontainerVersion = "1.20.1"
 
 plugins {
@@ -26,7 +26,7 @@ dependencies {
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     api("org.slf4j:slf4j-api:$slf4jVersion")
     api("io.micrometer:micrometer-registry-prometheus:$micrometerRegistryPrometheusVersion")
-    api("org.springframework.boot:spring-boot:3.3.4")
+    api("org.springframework.boot:spring-boot:3.4.0")
 
     testImplementation(kotlin("test"))
     testImplementation("org.testcontainers:kafka:$kafkaTestcontainerVersion")

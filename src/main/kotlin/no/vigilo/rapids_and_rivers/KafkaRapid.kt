@@ -5,10 +5,19 @@ import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics
 import no.vigilo.kafka.ConsumerProducerFactory
 import no.vigilo.rapids_and_rivers_api.KeyMessageContext
 import no.vigilo.rapids_and_rivers_api.RapidsConnection
-import org.apache.kafka.clients.consumer.*
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.clients.consumer.ConsumerRecords
+import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.errors.*
+import org.apache.kafka.common.errors.AuthorizationException
+import org.apache.kafka.common.errors.InvalidTopicException
+import org.apache.kafka.common.errors.RecordBatchTooLargeException
+import org.apache.kafka.common.errors.RecordTooLargeException
+import org.apache.kafka.common.errors.UnknownServerException
+import org.apache.kafka.common.errors.WakeupException
 import org.intellij.lang.annotations.Language
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -123,8 +132,10 @@ class KafkaRapid(
             .toMutableMap()
         try {
             records.onEach { record ->
-                onRecord(record)
-                currentPositions[TopicPartition(record.topic(), record.partition())] = record.offset() + 1
+                if (running.get()) {
+                    onRecord(record)
+                    currentPositions[TopicPartition(record.topic(), record.partition())] = record.offset() + 1
+                }
             }
         } catch (err: Exception) {
             log.info(
@@ -141,7 +152,8 @@ class KafkaRapid(
 
     private fun onRecord(record: ConsumerRecord<String, String>) {
         withMDC(recordDiganostics(record)) {
-            val recordValue = record.value() ?: return@withMDC log.info("ignoring record with offset ${record.offset()} in partition ${record.partition()} because value is null (tombstone)")
+            val recordValue = record.value()
+                ?: return@withMDC log.info("ignoring record with offset ${record.offset()} in partition ${record.partition()} because value is null (tombstone)")
             val context = KeyMessageContext(this, record.key())
             notifyMessage(recordValue, context, meterRegistry)
         }
@@ -197,6 +209,7 @@ class KafkaRapid(
 
     private fun offsetMetadata(offset: Long): OffsetAndMetadata {
         val clientId = consumer.groupMetadata().groupInstanceId().map { "\"$it\"" }.orElse("null")
+
         @Language("JSON")
         val metadata = """{"time": "${LocalDateTime.now()}","groupInstanceId": $clientId}"""
         return OffsetAndMetadata(offset, metadata)
@@ -232,6 +245,7 @@ class KafkaRapid(
             is RecordTooLargeException,
             is UnknownServerException,
             is AuthorizationException -> true
+
             else -> false
         }
     }
