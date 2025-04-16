@@ -30,7 +30,7 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation("org.testcontainers:kafka:$kafkaTestcontainerVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 
 tasks.test {
