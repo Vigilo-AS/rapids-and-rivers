@@ -1,4 +1,4 @@
-val slf4jVersion = "2.0.16"
+val slf4jVersion = "2.0.17"
 val micrometerRegistryPrometheusVersion = "1.14.1"
 val jacksonVersion = "2.18.2"
 val testcontainersVersion = "1.20.1"
