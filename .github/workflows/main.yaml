@@ -13,7 +13,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21.x'
       - name: test and build
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           arguments: build
   release:
@@ -48,7 +48,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21.x'
       - name: publish
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           arguments: -Pversion=${{ needs.release.outputs.tag }} publish
         env:
