@@ -3,7 +3,7 @@ val micrometerRegistryPrometheusVersion = "1.14.1"
 val jacksonVersion = "2.18.2"
 val testcontainersVersion = "1.20.1"
 val kafkaVersion = "3.9.0"
-val kafkaTestcontainerVersion = "1.20.1"
+val kafkaTestcontainerVersion = "1.20.6"
 
 plugins {
     kotlin("jvm") version "2.0.20"
