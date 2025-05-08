@@ -44,7 +44,7 @@ class AivenConfig(
 
     override fun producerConfig(properties: Properties) = Properties().apply {
         putAll(kafkaBaseConfig())
-        put(ProducerConfig.ACKS_CONFIG, "1")
+        put(ProducerConfig.ACKS_CONFIG, "all")
         put(ProducerConfig.LINGER_MS_CONFIG, "0")
         put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
 
