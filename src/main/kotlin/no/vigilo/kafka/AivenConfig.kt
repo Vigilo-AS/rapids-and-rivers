@@ -47,6 +47,8 @@ class AivenConfig(
         put(ProducerConfig.ACKS_CONFIG, "all")
         put(ProducerConfig.LINGER_MS_CONFIG, "0")
         put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
+        put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE.toString())
+        put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true")
 
         // Tunables
         put(CommonClientConfigs.METADATA_MAX_AGE_CONFIG, metadataMaxAgeMs)
