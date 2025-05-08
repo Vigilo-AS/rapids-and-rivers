@@ -27,6 +27,15 @@ class AivenConfig(
 
         private fun String.readFile() =
             File(this).readText(Charsets.UTF_8)
+
+        private fun envOrDefault(envName: String, defaultValue: String) =
+            System.getenv(envName) ?: defaultValue
+
+        // Kafka tuning parameters (defaults as per Aiven's suggestion)
+        val metadataMaxAgeMs = envOrDefault("KAFKA_METADATA_MAX_AGE_MS", "600000")
+        val requestTimeoutMs = envOrDefault("KAFKA_REQUEST_TIMEOUT_MS", "20000")
+        val connectionsMaxIdleMs = envOrDefault("KAFKA_CONNECTIONS_MAX_IDLE_MS", "300000")
+        val retryBackoffMs = envOrDefault("KAFKA_RETRY_BACKOFF_MS", "50")
     }
 
     init {
@@ -38,6 +47,13 @@ class AivenConfig(
         put(ProducerConfig.ACKS_CONFIG, "1")
         put(ProducerConfig.LINGER_MS_CONFIG, "0")
         put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
+
+        // Tunables
+        put(CommonClientConfigs.METADATA_MAX_AGE_CONFIG, metadataMaxAgeMs)
+        put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs)
+        put(CommonClientConfigs.CONNECTIONS_MAX_IDLE_MS_CONFIG, connectionsMaxIdleMs)
+        put(CommonClientConfigs.RETRY_BACKOFF_MS_CONFIG, retryBackoffMs)
+
         putAll(properties)
     }
 
@@ -45,6 +61,13 @@ class AivenConfig(
         putAll(kafkaBaseConfig())
         put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
         putAll(properties)
+
+        // Tunables
+        put(CommonClientConfigs.METADATA_MAX_AGE_CONFIG, metadataMaxAgeMs)
+        put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs)
+        put(CommonClientConfigs.CONNECTIONS_MAX_IDLE_MS_CONFIG, connectionsMaxIdleMs)
+        put(CommonClientConfigs.RETRY_BACKOFF_MS_CONFIG, retryBackoffMs)
+
         put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
     }
 
@@ -56,11 +79,11 @@ class AivenConfig(
     private fun kafkaBaseConfig() = Properties().apply {
         put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, brokers)
         put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SSL.name)
-        put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PEM");
-        put(SslConfigs.SSL_KEYSTORE_CERTIFICATE_CHAIN_CONFIG, certificateChain());
-        put(SslConfigs.SSL_KEYSTORE_KEY_CONFIG, privateKey);
-        put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PEM");
-        put(SslConfigs.SSL_TRUSTSTORE_CERTIFICATES_CONFIG, ca);
+        put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PEM")
+        put(SslConfigs.SSL_KEYSTORE_CERTIFICATE_CHAIN_CONFIG, certificateChain())
+        put(SslConfigs.SSL_KEYSTORE_KEY_CONFIG, privateKey)
+        put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PEM")
+        put(SslConfigs.SSL_TRUSTSTORE_CERTIFICATES_CONFIG, ca)
     }
 
     private fun certificateChain() = "$privateKey\n$trustedCertificate"
