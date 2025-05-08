@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "no.vigilo"
-version = properties["version"] ?: "local-build"
+version = version
 
 
 repositories {

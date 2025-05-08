@@ -29,12 +29,14 @@ class RapidApplication(
     private val appName: String? = null,
     private val instanceId: String,
     private val applicationEventsWithKey: Boolean,
+    registerStatusListeners: Boolean,
+    registerMessageListeners: Boolean,
 ) : RapidsConnection(), RapidsConnection.MessageListener, RapidsConnection.StatusListener {
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread(::shutdownHook))
-        rapid.register(this as MessageListener)
-        rapid.register(this as StatusListener)
+        if (registerMessageListeners) rapid.register(this as MessageListener)
+        if (registerStatusListeners) rapid.register(this as StatusListener)
     }
 
     companion object {
@@ -54,6 +56,8 @@ class RapidApplication(
             env: Map<String, String>,
             consumerProducerFactory: ConsumerProducerFactory = ConsumerProducerFactory(AivenConfig.default),
             applicationEventsWithKey: Boolean = false,
+            registerStatusListeners: Boolean = true,
+            registerMessageListeners: Boolean = true,
         ): RapidsConnection {
             val meterRegistry =
                 PrometheusMeterRegistry(PrometheusConfig.DEFAULT, PrometheusRegistry.defaultRegistry, Clock.SYSTEM)
@@ -68,7 +72,9 @@ class RapidApplication(
                 rapid = kafkaRapid,
                 appName = generateAppName(env),
                 instanceId = generateInstanceId(env),
-                applicationEventsWithKey = applicationEventsWithKey
+                applicationEventsWithKey = applicationEventsWithKey,
+                registerStatusListeners = registerStatusListeners,
+                registerMessageListeners = registerMessageListeners
             )
         }
 

@@ -11,10 +11,14 @@ import org.springframework.context.event.EventListener
 class SpringRapidApplication(
     private val localKafka: Boolean,
     applicationEventsWithKeys: Boolean,
+    registerStatusListeners: Boolean,
+    registerMessageListeners: Boolean,
     private val rapid: RapidsConnection = RapidApplication.create(
         System.getenv(),
         ConsumerProducerFactory(if (localKafka) LocalConfig.default else AivenConfig.default),
-        applicationEventsWithKeys
+        applicationEventsWithKey = applicationEventsWithKeys,
+        registerStatusListeners = registerStatusListeners,
+        registerMessageListeners = registerMessageListeners,
     )
 ) : Runnable {
 
@@ -25,20 +29,46 @@ class SpringRapidApplication(
          * Create a new SpringRapidApplication instance.
          * @param localKafka Boolean whether to use a local Kafka instance. Defaults to false.
          * @param applicationEventsWithKeys Boolean whether to publish application events with a key. The key is a random UUID.
+         * @param registerStatusListeners Boolean whether to register status listeners. Defaults to true.
+         * @param registerMessageListeners Boolean whether to register message listeners. Defaults to true.
          * @return SpringRapidApplication
          */
-        fun create(localKafka: Boolean, applicationEventsWithKeys: Boolean) =
-            SpringRapidApplication(localKafka, applicationEventsWithKeys)
+        fun create(
+            localKafka: Boolean,
+            applicationEventsWithKeys: Boolean,
+            registerStatusListeners: Boolean,
+            registerMessageListeners: Boolean
+        ) =
+            SpringRapidApplication(
+                localKafka = localKafka,
+                applicationEventsWithKeys = applicationEventsWithKeys,
+                registerStatusListeners = registerStatusListeners,
+                registerMessageListeners = registerMessageListeners,
+            )
 
         /**
          * Create a new SpringRapidApplication instance with rapid connection.
          * @param localKafka Boolean whether to use a local Kafka instance. Defaults to false.
          * @param applicationEventsWithKeys Boolean whether to publish application events with a key. The key is a random UUID.
          * @param rapid RapidsConnection the rapid connection to use.
+         * @param registerStatusListeners Boolean whether to register status listeners. Defaults to true.
+         * @param registerMessageListeners Boolean whether to register message listeners. Defaults to true.
          * @return SpringRapidApplication
          */
-        fun create(localKafka: Boolean, applicationEventsWithKeys: Boolean, rapid: RapidsConnection) =
-            SpringRapidApplication(localKafka, applicationEventsWithKeys, rapid)
+        fun create(
+            localKafka: Boolean,
+            applicationEventsWithKeys: Boolean,
+            rapid: RapidsConnection,
+            registerStatusListeners: Boolean,
+            registerMessageListeners: Boolean
+        ) =
+            SpringRapidApplication(
+                localKafka = localKafka,
+                applicationEventsWithKeys = applicationEventsWithKeys,
+                rapid = rapid,
+                registerStatusListeners = registerStatusListeners,
+                registerMessageListeners = registerMessageListeners,
+            )
     }
 
     @EventListener(ApplicationReadyEvent::class)
