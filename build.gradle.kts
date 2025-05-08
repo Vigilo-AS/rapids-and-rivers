@@ -1,6 +1,6 @@
 val slf4jVersion = "2.0.16"
 val micrometerRegistryPrometheusVersion = "1.14.1"
-val jacksonVersion = "2.18.2"
+val jacksonVersion = "2.18.3"
 val testcontainersVersion = "1.20.1"
 val kafkaVersion = "3.9.0"
 val kafkaTestcontainerVersion = "1.20.1"
