@@ -62,6 +62,7 @@ class AivenConfig(
     override fun consumerConfig(groupId: String, properties: Properties) = Properties().apply {
         putAll(kafkaBaseConfig())
         put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
+        put(ConsumerConfig.ENABLE_METRICS_PUSH_CONFIG, "false")
         putAll(properties)
 
         // Tunables
