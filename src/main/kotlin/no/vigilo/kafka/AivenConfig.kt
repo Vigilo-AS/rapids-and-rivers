@@ -1,6 +1,7 @@
 package no.vigilo.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.slf4j.LoggerFactory
@@ -48,6 +49,7 @@ class AivenConfig(
     override fun consumerConfig(groupId: String, properties: Properties) = Properties().apply {
         putAll(kafkaBaseConfig())
         putAll(baseConsumerConfig())
+        put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
         putAll(properties)
     }
 
