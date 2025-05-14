@@ -1,12 +1,9 @@
 package no.vigilo.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.security.auth.SecurityProtocol
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.util.*
 
 class AivenConfig(
@@ -25,17 +22,17 @@ class AivenConfig(
                 ca = requireNotNull(System.getenv("KAFKA_CA_CERT")) { "Expected KAFKA_CA_CERT" }
             )
 
-        private fun String.readFile() =
-            File(this).readText(Charsets.UTF_8)
+//        private fun String.readFile() =
+//            File(this).readText(Charsets.UTF_8)
+//
+//        fun envOrDefault(envName: String, defaultValue: String) =
+//            System.getenv(envName) ?: defaultValue
 
-        private fun envOrDefault(envName: String, defaultValue: String) =
-            System.getenv(envName) ?: defaultValue
-
-        // Kafka tuning parameters (defaults as per Aiven's suggestion)
-        val metadataMaxAgeMs = envOrDefault("KAFKA_METADATA_MAX_AGE_MS", "600000")
-        val requestTimeoutMs = envOrDefault("KAFKA_REQUEST_TIMEOUT_MS", "20000")
-        val connectionsMaxIdleMs = envOrDefault("KAFKA_CONNECTIONS_MAX_IDLE_MS", "300000")
-        val retryBackoffMs = envOrDefault("KAFKA_RETRY_BACKOFF_MS", "50")
+//        // Kafka tuning parameters (defaults as per Aiven's suggestion)
+//        val metadataMaxAgeMs = envOrDefault("KAFKA_METADATA_MAX_AGE_MS", "600000")
+//        val requestTimeoutMs = envOrDefault("KAFKA_REQUEST_TIMEOUT_MS", "20000")
+//        val connectionsMaxIdleMs = envOrDefault("KAFKA_CONNECTIONS_MAX_IDLE_MS", "300000")
+//        val retryBackoffMs = envOrDefault("KAFKA_RETRY_BACKOFF_MS", "50")
     }
 
     init {
@@ -44,34 +41,14 @@ class AivenConfig(
 
     override fun producerConfig(properties: Properties) = Properties().apply {
         putAll(kafkaBaseConfig())
-        put(ProducerConfig.ACKS_CONFIG, "all")
-        put(ProducerConfig.LINGER_MS_CONFIG, "0")
-        put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1")
-        put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE.toString())
-        put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true")
-
-        // Tunables
-        put(CommonClientConfigs.METADATA_MAX_AGE_CONFIG, metadataMaxAgeMs)
-        put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs)
-        put(CommonClientConfigs.CONNECTIONS_MAX_IDLE_MS_CONFIG, connectionsMaxIdleMs)
-        put(CommonClientConfigs.RETRY_BACKOFF_MS_CONFIG, retryBackoffMs)
-
+        putAll(baseProducerConfig())
         putAll(properties)
     }
 
     override fun consumerConfig(groupId: String, properties: Properties) = Properties().apply {
         putAll(kafkaBaseConfig())
-        put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
-        put(ConsumerConfig.ENABLE_METRICS_PUSH_CONFIG, "false")
+        putAll(baseConsumerConfig())
         putAll(properties)
-
-        // Tunables
-        put(CommonClientConfigs.METADATA_MAX_AGE_CONFIG, metadataMaxAgeMs)
-        put(CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs)
-        put(CommonClientConfigs.CONNECTIONS_MAX_IDLE_MS_CONFIG, connectionsMaxIdleMs)
-        put(CommonClientConfigs.RETRY_BACKOFF_MS_CONFIG, retryBackoffMs)
-
-        put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
     }
 
     override fun adminConfig(properties: Properties) = Properties().apply {
@@ -87,6 +64,9 @@ class AivenConfig(
         put(SslConfigs.SSL_KEYSTORE_KEY_CONFIG, privateKey)
         put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PEM")
         put(SslConfigs.SSL_TRUSTSTORE_CERTIFICATES_CONFIG, ca)
+
+        putAll(baseCommonClientConfigs())
+
     }
 
     private fun certificateChain() = "$privateKey\n$trustedCertificate"
