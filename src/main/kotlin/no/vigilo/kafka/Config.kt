@@ -22,14 +22,18 @@ interface Config {
         put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true")
         put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4")
         put(ProducerConfig.BATCH_SIZE_CONFIG, "65536")
+
     }
 
     fun baseConsumerConfig() : Properties = Properties().apply {
+        val maxPollIntervalMs = envOrDefault("KAFKA_MAX_POLL_INTERVAL_MS", "600000")
+
         put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
         put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "2000")
         put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "65536")
         put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "100")
         put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed")
+        put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs)
 
     }
     fun baseCommonClientConfigs(): Properties = Properties().apply {
